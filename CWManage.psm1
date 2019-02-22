@@ -457,7 +457,7 @@ function Invoke-CWMSearchMaster {
         'childconditions'          { $Body.childconditions          = $Arguments.childconditions          }
         'customfieldconditions'    { $Body.customfieldconditions    = $Arguments.customfieldconditions    }                       
     }
-    $Body = $($Body | ConvertTo-Json)
+    $Body = ConvertTo-Json $Body -Depth 10
     Write-Verbose $Body
 
     $WebRequestArguments = @{
@@ -555,7 +555,7 @@ function Invoke-CWMPatchMaster {
         [string]$URI
     )
 
-    Write-Verbose $Arguments.Value
+    Write-Verbose $($Arguments.Value|Out-String)
     $global:TArguments = $Arguments
     $Body =@(
         @{            
@@ -564,7 +564,7 @@ function Invoke-CWMPatchMaster {
             value = $Arguments.Value
         }
     )
-    $Body = $(ConvertTo-Json $Body)
+    $Body = ConvertTo-Json $Body -Depth 10
     Write-Verbose $Body
 
     $WebRequestArguments = @{
@@ -636,7 +636,7 @@ function Invoke-CWMNewMaster {
 function Invoke-CWMAllResult {
     <#
         .SYNOPSIS
-        This will handel web requests for all results to the ConnectWise Manage API.
+        This will handle web requests for all results to the ConnectWise Manage API.
             
         .DESCRIPTION
         This will enable forward only pagination and loop all results.
@@ -1226,12 +1226,65 @@ function Get-CWMCompanyConfiguration {
 
     return Invoke-CWMGetMaster -Arguments $PsBoundParameters -URI $URI            
 }
+
+function Update-CWMCompanyConfiguration {
+    <#
+        .SYNOPSIS
+        This will update a company configuration.
+            
+        .PARAMETER CompanyConfigurationID
+        The ID of the company configuration that you are updating.
+
+        .PARAMETER Operation
+        What you are doing with the value. 
+        replace, add, remove
+
+        .PARAMETER Path
+        The value that you want to perform the operation on.
+
+        .PARAMETER Value
+        The value of path.
+
+        .EXAMPLE
+        $UpdateParam = @{
+            CompanyConfigurationID = $CompanyConfigurationID.id
+            Operation = 'replace'
+            Path = 'name'
+            Value = $NewName
+        }
+        Update-CWMCompanyConfiguration @UpdateParam
+
+            .NOTES
+            Author: Darren White
+            Date: 02/21/2019
+            
+            .LINK
+            http://labtechconsulting.com
+            https://developer.connectwise.com/products/manage/rest?a=Company&e=Configurations&o=UPDATE
+    #>
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory=$true)]
+        [int]$CompanyConfigurationID,
+        [Parameter(Mandatory=$true)]
+        [validateset('add','replace','remove')]
+        $Operation,
+        [Parameter(Mandatory=$true)]
+        [string]$Path,
+        [Parameter(Mandatory=$true)]
+        $Value
+    )
+
+    $URI = "https://$($global:CWMServerConnection.Server)/v4_6_release/apis/3.0/company/configurations/$CompanyConfigurationID"
+    return Invoke-CWMPatchMaster -Arguments $PsBoundParameters -URI $URI
+}
+
 function Remove-CWMCompanyConfiguration {
     <#
         .SYNOPSIS
         This function will remove a company configuration from Manage.
             
-        .PARAMETER CompanyID
+        .PARAMETER CompanyConfigurationID
         The ID of the company configuration that you want to delete.
 
         .EXAMPLE
@@ -1630,7 +1683,7 @@ function Remove-CWMCompanyTypeAssociation {
         The ID of the company configuration that you want to delete.
 
         .EXAMPLE
-        Remove-CWMCompanyConfiguration -CompanyConfigurationID 123
+        Remove-CWMCompanyTypeAssociation -CompanyID 123 -TypeAssociationID 456
 
         .NOTES
         Author: Chris Taylor
