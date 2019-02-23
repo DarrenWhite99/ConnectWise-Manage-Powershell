@@ -260,7 +260,7 @@ function ConvertTo-CWMTime {
         .PARAMETER Date
         Date used in conversion.
 
-        .PARAMETER RawTime
+        .PARAMETER Raw
         Outputs time without braces
         
         .EXAMPLE
@@ -277,6 +277,7 @@ function ConvertTo-CWMTime {
     param(
     [Parameter(ValueFromPipeline = $true)]
     [datetime]$Date,
+    [Alias("RawTime")]
     [switch]$Raw
     )
     $Converted = "[$(Get-Date $Date.ToUniversalTime() -format yyyy-MM-ddTHH:mm:ssZ)]"
@@ -594,7 +595,7 @@ function Invoke-CWMNewMaster {
         The URI of the create endpoint
                             
         .EXAMPLE
-        Invoke-CWMPatchMaster -Arguments $Arguments -URI $URI
+        Invoke-CWMNewMaster -Arguments $Arguments -URI $URI
             
         .NOTES
         Author: Chris Taylor
@@ -3845,7 +3846,7 @@ function Get-CWMServiceBoard {
 function Get-CWMReport {
     <#
         .SYNOPSIS
-        This function will allow you to search for Manage configurations.
+        This function will allow you to search for Manage Reports.
     
         .PARAMETER Report
         The name of the report you want to run. Leave blank to list all reports.
@@ -4221,7 +4222,7 @@ function Get-CWMTimeSheet {
         Return all results
 
         .EXAMPLE
-        Get-CWTimeSheet -Condition 'member/identifier="ctaylor" and status = "Open"'
+        Get-CWMTimeSheet -Condition 'member/identifier="ctaylor" and status = "Open"'
         This will return all the open time sheets for ctaylor
 
         .NOTES
