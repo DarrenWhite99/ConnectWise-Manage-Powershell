@@ -4164,6 +4164,41 @@ function Get-CWMChargeCode{
         $Result = Get-CWMReport -Report $Report
         return $Result
     }
+    function Get-CWMChargeCodes{
+        <#
+        .SYNOPSIS
+        Gets a list of charge codes
+        
+        .EXAMPLE
+        Get-ChargeCode
+        
+        .NOTES
+        Author: Darren White
+        Date: 02/26/2019
+    
+        Update Date:    2019-02-26
+        Author:         Darren White
+        Purpose/Change: Changed to use time/ChargeCodes endpoint instead of report endpoint.
+        .LINK
+        http://labtechconsulting.com
+        https://developer.connectwise.com/products/manage/rest?a=Time&e=ChargeCodes&o=GET
+        #>
+        [CmdletBinding()]
+        param(
+            [string]$Condition,
+            [ValidateSet('asc','desc')] 
+            $orderBy,
+            [string]$childconditions,
+            [string]$customfieldconditions,
+            [int]$page,
+            [int]$pageSize,
+            [switch]$all
+        )
+
+        $URI = "https://$($global:CWMServerConnection.Server)/v4_6_release/apis/3.0/time/chargeCodes"
+
+        return Invoke-CWMGetMaster -Arguments $PsBoundParameters -URI $URI            
+    }
 function Get-CWMSystemInfo {
     <#
         .SYNOPSIS
