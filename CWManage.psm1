@@ -4175,10 +4175,7 @@ function Get-CWMChargeCode{
         .NOTES
         Author: Darren White
         Date: 02/26/2019
-    
-        Update Date:    2019-02-26
-        Author:         Darren White
-        Purpose/Change: Changed to use time/ChargeCodes endpoint instead of report endpoint.
+
         .LINK
         http://labtechconsulting.com
         https://developer.connectwise.com/products/manage/rest?a=Time&e=ChargeCodes&o=GET
