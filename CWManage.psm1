@@ -2948,23 +2948,19 @@ function Get-CWMProjectTeamMember {
 function New-CWMProjectTeamMember {
     <#
         .SYNOPSIS
-        This function will create a new ticket.
+        This function will add a team member to a project.
     
         .EXAMPLE
-        $Ticket = @{
-            'identifier' = $Product.offerName
-            'description' = $Product.offerName
-            'subcategory' = @{id = 152}
-            'type' = @{id = 47}
-            'customerDescription' = $Product.offerName
-            'cost' = $Product.unitPrice
-            'price' = $Price
-            'manufacturerPartNumber' = $Product.offerName
-            'manufacturer' = $Manufacturer
-            'productClass' = 'Agreement'
-            'taxableFlag' = $true
+        $ProjectMember = @{
+            'id' = $Project.ID
+            'member' = @{id = $Member.ID}
+            'projectRole' = @{id = $ProjectRole.ID}
+            'workRole' = @{id = $WorkRole.ID}
+            'hours' = $estimatedHours
+            'startDate' = ConvertTo-CWMTime $(Get-Date (Get-Date -Day 1)) -Raw
+            'endDate' = ConvertTo-CWMTime $(Get-Date (Get-Date -Day 1).AddMonths(1)) -Raw
         }
-        New-CWTicket @Ticket
+        New-CWMProjectTeamMember @ProjectMember
         
         .NOTES
         Author: Chris Taylor
@@ -2977,7 +2973,7 @@ function New-CWMProjectTeamMember {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory=$true)]
-        [int]$ProjectID,
+        [Alias("ProjectID")]
         [int]$id,
         [decimal]$hours,
         [Parameter(Mandatory=$true)]
@@ -2986,11 +2982,10 @@ function New-CWMProjectTeamMember {
         $projectRole,
         $workRole,
         [string]$startDate,
-        [string]$endDate,
-        $_info
+        [string]$endDate
     )
         
-    $URI = "https://$($global:CWMServerConnection.Server)/v4_6_release/apis/3.0/project/projects/$ProjectID/teamMembers"
+    $URI = "https://$($global:CWMServerConnection.Server)/v4_6_release/apis/3.0/project/projects/$id/teamMembers"
     return Invoke-CWMNewMaster -Arguments $PsBoundParameters -URI $URI        
 }
 #endregion [ProjectsTeamMembers]-------
