@@ -1557,7 +1557,7 @@ function Get-CWMCompanyType {
         Return all results
     
         .EXAMPLE
-        Get-CWCompanyType -all
+        Get-CWMCompanyType -all
         Will list all company types.
         
         .NOTES
@@ -2428,7 +2428,7 @@ function New-CWMProductCatalog {
             'productClass' = 'Agreement'
             'taxableFlag' = $true
         }
-        New-CWMCatalog @Catalog
+        New-CWMProductCatalog @Catalog
         
         .NOTES
         Author: Chris Taylor
@@ -2508,8 +2508,8 @@ function Update-CWMProductCatalog {
             Path      = 'price'
             Value     = $Price                            
         }
-        Update-CWMCatalog @Update
-    
+        Update-CWMProductCatalog @Update
+
         .NOTES
         Author: Chris Taylor
         Date: 10/10/2018
@@ -2832,10 +2832,10 @@ function Update-CWMProjectPhase {
         This will update an project phase.
             
         .PARAMETER ProjectID
-        The ID of the project that you are updating. List-CWProjects
+        The ID of the project that you are updating. List-CWMProjects
     
         .PARAMETER PhaseID
-        The ID of the phase that you are updating. Get-CWProjectPhases
+        The ID of the phase that you are updating. Get-CWMProjectPhases
     
         .PARAMETER Operation
         What you are doing with the value. 
@@ -2855,7 +2855,7 @@ function Update-CWMProjectPhase {
             Path = 'status'
             Value = $Value
         }
-        Update-CWProjectPhase @UpdateParam
+        Update-CWMProjectPhase @UpdateParam
     
         .NOTES
         Author: Chris Taylor
