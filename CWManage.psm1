@@ -4141,61 +4141,6 @@ function Get-CWMAuditTrail {
         return Invoke-CWMGetMaster -Arguments $PsBoundParameters -URI $URI            
     }
 #endregion [MemberInfos]-------   
-function Get-CWMChargeCode{
-        <#
-        .SYNOPSIS
-        Gets a list of charge codes
-        
-        .EXAMPLE
-        Get-CWMChargeCode
-        
-        .NOTES
-        Author: Chris Taylor
-        Date: 10/10/2018
-    
-        .LINK
-        http://labtechconsulting.com
-        #>
-        [CmdletBinding()]
-        param(
-        )
-    
-        $Report = 'ChargeCode'
-        $Result = Get-CWMReport -Report $Report
-        return $Result
-    }
-    function Get-CWMChargeCodes{
-        <#
-        .SYNOPSIS
-        Gets a list of charge codes
-        
-        .EXAMPLE
-        Get-CWMChargeCodes
-        
-        .NOTES
-        Author: Darren White
-        Date: 02/26/2019
-
-        .LINK
-        http://labtechconsulting.com
-        https://developer.connectwise.com/products/manage/rest?a=Time&e=ChargeCodes&o=GET
-        #>
-        [CmdletBinding()]
-        param(
-            [string]$Condition,
-            [ValidateSet('asc','desc')] 
-            $orderBy,
-            [string]$childconditions,
-            [string]$customfieldconditions,
-            [int]$page,
-            [int]$pageSize,
-            [switch]$all
-        )
-
-        $URI = "https://$($global:CWMServerConnection.Server)/v4_6_release/apis/3.0/time/chargeCodes"
-
-        return Invoke-CWMGetMaster -Arguments $PsBoundParameters -URI $URI            
-    }
 function Get-CWMSystemInfo {
     <#
         .SYNOPSIS
@@ -4224,6 +4169,63 @@ function Get-CWMSystemInfo {
 #endregion [System]-------
 
 #region [Time]-------
+#region [ChargeCodes]-------
+function Get-CWMChargeCode{
+    <#
+    .SYNOPSIS
+    Gets a list of charge codes
+    
+    .EXAMPLE
+    Get-CWMChargeCode
+    
+    .NOTES
+    Author: Chris Taylor
+    Date: 10/10/2018
+
+    .LINK
+    http://labtechconsulting.com
+    #>
+    [CmdletBinding()]
+    param(
+    )
+
+    $Report = 'ChargeCode'
+    $Result = Get-CWMReport -Report $Report
+    return $Result
+}
+function Get-CWMChargeCodes{
+    <#
+    .SYNOPSIS
+    Gets a list of charge codes
+    
+    .EXAMPLE
+    Get-CWMChargeCodes
+    
+    .NOTES
+    Author: Darren White
+    Date: 02/26/2019
+
+    .LINK
+    http://labtechconsulting.com
+    https://developer.connectwise.com/products/manage/rest?a=Time&e=ChargeCodes&o=GET
+    #>
+    [CmdletBinding()]
+    param(
+        [string]$Condition,
+        [ValidateSet('asc','desc')] 
+        $orderBy,
+        [string]$childconditions,
+        [string]$customfieldconditions,
+        [int]$page,
+        [int]$pageSize,
+        [switch]$all
+    )
+
+    $URI = "https://$($global:CWMServerConnection.Server)/v4_6_release/apis/3.0/time/chargeCodes"
+
+    return Invoke-CWMGetMaster -Arguments $PsBoundParameters -URI $URI            
+}
+#endregion [ChargeCodes]-------
 #region [TimeSheets]-------
 function Get-CWMTimeSheet {
     <#
