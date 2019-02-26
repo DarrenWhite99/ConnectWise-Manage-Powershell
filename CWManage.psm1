@@ -4147,7 +4147,7 @@ function Get-CWMChargeCode{
         Gets a list of charge codes
         
         .EXAMPLE
-        Get-ChargeCode
+        Get-CWMChargeCode
         
         .NOTES
         Author: Chris Taylor
@@ -4170,7 +4170,7 @@ function Get-CWMChargeCode{
         Gets a list of charge codes
         
         .EXAMPLE
-        Get-ChargeCode
+        Get-CWMChargeCodes
         
         .NOTES
         Author: Darren White
