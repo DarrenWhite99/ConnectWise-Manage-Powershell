@@ -105,6 +105,7 @@ function Connect-CWM {
 
     # Version supported
     $Version = '3.0.0'
+    $Version = '2019.3'
 
     if ((($global:CWMServerConnection -and !$global:CWMServerConnection.expiration) -or $global:CWMServerConnection.expiration -gt $(Get-Date)) -and !$Force) {
         Write-Verbose "Using cached Authentication information."
@@ -120,6 +121,7 @@ function Connect-CWM {
         $Authstring  = "$($Company)+$($pubkey):$($privatekey)"
         $encodedAuth  = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes($Authstring));
         $Headers = @{
+            clientid = 'bcaa3b1e-75f8-40d9-a5fc-b909cff822c1'
             Authorization = "Basic $encodedAuth"
             'Cache-Control'= 'no-cache'
         }
@@ -158,6 +160,7 @@ function Connect-CWM {
         $Authstring  = $Company + '+' + $IntegratorUser + ':' + $IntegratorPass
         $encodedAuth  = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes($Authstring))
         $Headers = @{
+            clientid = 'bcaa3b1e-75f8-40d9-a5fc-b909cff822c1'
             Authorization = "Basic $encodedAuth"
             'x-CW-usertype' = "integrator"
             'Cache-Control'= 'no-cache'
@@ -190,12 +193,13 @@ function Connect-CWM {
             $Authstring  = $Company + '+' + $Result.publicKey + ':' + $Result.privateKey
             $encodedAuth  = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(($Authstring)));
             $Headers = @{
+                clientid = 'bcaa3b1e-75f8-40d9-a5fc-b909cff822c1'
                 Authorization = "Basic $encodedAuth"
                 'Cache-Control'= 'no-cache'
             }    
         }
     }
-        
+    
     # not enough info
     else {
         Write-Error "Valid authentication parameters not passed"
@@ -1768,6 +1772,142 @@ function Update-CWMCompanyTypeAssociation {
 #endregion [Company]-------
 
 #region [Expense]-------
+function Get-CWMExpenseEntry {
+    <#
+        .SYNOPSIS
+        This function will list <SOMETHING> based on conditions.
+            
+        .PARAMETER ID
+        The ID of the <SOMETHING> that you are retrieving.
+
+        .PARAMETER Condition
+        This is your search condition to return the results you desire.
+        Example:
+        (contact/name like "Fred%" and closedFlag = false) and dateEntered > [2015-12-23T05:53:27Z] or summary contains "test" AND  summary != "Some Summary"
+
+        .PARAMETER orderBy
+        Choose which field to sort the results by
+
+        .PARAMETER childconditions
+        Allows searching arrays on endpoints that list childConditions under parameters
+
+        .PARAMETER customfieldconditions
+        Allows searching custom fields when customFieldConditions is listed in the parameters
+
+        .PARAMETER fields
+        Specifies that only the requested fields be returned
+        
+        .PARAMETER page
+        Used in pagination to cycle through results
+
+        .PARAMETER pageSize
+        Number of results returned per page (Defaults to 25)
+
+        .PARAMETER all
+        Return all results
+
+        .EXAMPLE
+        Get-CWMTemplate -Condition "status/id IN (1,42,43,57)" -all
+        Will return all <SOMETHING> that match the condition
+
+        .NOTES
+        Author: Chris Taylor
+        Date: <GET-DATE>
+
+        .LINK
+        http://labtechconsulting.com
+        https://developer.connectwise.com/manage/rest?o=GET
+        https://developer.connectwise.com/manage/rest?o=GETBYID
+    #>
+    [CmdletBinding(DefaultParameterSetName = 'get')]
+    param(
+        [Parameter(ParameterSetName = 'getbyid', Mandatory = $False)]
+        [Nullable[int]]$id,
+        [Parameter(ParameterSetName = 'get', Mandatory = $False)]
+        [string]$Condition,
+        [Parameter(ParameterSetName = 'get', Mandatory = $False)]
+        [string]$orderBy,
+        [Parameter(ParameterSetName = 'get', Mandatory = $False)]
+        [string]$childconditions,
+        [Parameter(ParameterSetName = 'get', Mandatory = $False)]
+        [string]$customfieldconditions,
+        [Parameter(ParameterSetName = 'get', Mandatory = $False)]
+        [Parameter(ParameterSetName = 'getbyid', Mandatory = $False)]
+        [string]$fields,
+        [Parameter(ParameterSetName = 'get', Mandatory = $False)]
+        [int]$page,
+        [Parameter(ParameterSetName = 'get', Mandatory = $False)]
+        [int]$pageSize,
+        [Parameter(ParameterSetName = 'get', Mandatory = $False)]
+        [switch]$all
+    )
+
+    $URI = "https://$($global:CWMServerConnection.Server)/v4_6_release/apis/3.0/expense/entries/$id"
+
+    return Invoke-CWMGetMaster -Arguments $PsBoundParameters -URI $URI            
+}
+
+function Get-CWMExpenseEntryCount {
+    <#
+        .SYNOPSIS
+        This function will list <SOMETHING> based on conditions.
+            
+        .PARAMETER ID
+        The ID of the <SOMETHING> that you are retrieving.
+
+        .PARAMETER Condition
+        This is your search condition to return the results you desire.
+        Example:
+        (contact/name like "Fred%" and closedFlag = false) and dateEntered > [2015-12-23T05:53:27Z] or summary contains "test" AND  summary != "Some Summary"
+
+        .PARAMETER orderBy
+        Choose which field to sort the results by
+
+        .PARAMETER childconditions
+        Allows searching arrays on endpoints that list childConditions under parameters
+
+        .PARAMETER customfieldconditions
+        Allows searching custom fields when customFieldConditions is listed in the parameters
+
+        .PARAMETER fields
+        Specifies that only the requested fields be returned
+        
+        .PARAMETER page
+        Used in pagination to cycle through results
+
+        .PARAMETER pageSize
+        Number of results returned per page (Defaults to 25)
+
+        .PARAMETER all
+        Return all results
+
+        .EXAMPLE
+        Get-CWMTemplate -Condition "status/id IN (1,42,43,57)" -all
+        Will return all <SOMETHING> that match the condition
+
+        .NOTES
+        Author: Chris Taylor
+        Date: <GET-DATE>
+
+        .LINK
+        http://labtechconsulting.com
+        https://developer.connectwise.com/manage/rest?o=GET
+        https://developer.connectwise.com/manage/rest?o=GETBYID
+    #>
+    [CmdletBinding(DefaultParameterSetName = 'get')]
+    param(
+        [Parameter(ParameterSetName = 'get', Mandatory = $False)]
+        [string]$Condition,
+        [Parameter(ParameterSetName = 'get', Mandatory = $False)]
+        [string]$childconditions,
+        [Parameter(ParameterSetName = 'get', Mandatory = $False)]
+        [string]$customfieldconditions
+    )
+
+    $URI = "https://$($global:CWMServerConnection.Server)/v4_6_release/apis/3.0/expense/entries/count"
+
+    return Invoke-CWMGetMaster -Arguments $PsBoundParameters -URI $URI            
+}
 #endregion [Expense]-------
 
 #region [Finance]-------
@@ -3376,12 +3516,18 @@ function Get-CWMTicket {
         [string]$childconditions,
         [string]$customfieldconditions,
         [string]$fields,
+        [validateset('ServiceTicket','ProjectTicket')]
+        $TicketType='ServiceTicket',
         [int]$page,
         [int]$pageSize,
         [switch]$all
     )
+    if ($TicketType -eq 'ProjectTicket') {
+        $URI = "https://$($global:CWMServerConnection.Server)/v4_6_release/apis/3.0/project/tickets"
+    }
+    else {$URI = "https://$($global:CWMServerConnection.Server)/v4_6_release/apis/3.0/service/tickets"}
     if ($TicketID) {
-        $URI = "https://$($global:CWMServerConnection.Server)/v4_6_release/apis/3.0/service/tickets/$($TicketID)"
+        $URI = "$URI/$($TicketID)"
         if($fields) {
             $fields = [System.Web.HttpUtility]::UrlEncode($fields)
             $URI += "?fields=$fields"
@@ -3389,7 +3535,7 @@ function Get-CWMTicket {
         return Invoke-CWMGetMaster -URI $URI
     }
     else {
-        $URI = "https://$($global:CWMServerConnection.Server)/v4_6_release/apis/3.0/service/tickets/search"
+        $URI = "$URI/search"
         if($fields) {
             $fields = [System.Web.HttpUtility]::UrlEncode($fields)
             $URI += "?fields=$fields"
@@ -4446,19 +4592,29 @@ function Get-CWMChargeCodes{
     .LINK
     http://labtechconsulting.com
     https://developer.connectwise.com/products/manage/rest?a=Time&e=ChargeCodes&o=GET
+    https://developer.connectwise.com/products/manage/rest?a=Time&e=ChargeCodes&o=GETBYID
     #>
-    [CmdletBinding()]
+    [CmdletBinding(DefaultParameterSetName = 'get')]
     param(
+        [Parameter(ParameterSetName = 'getbyid', Mandatory = $False)]
+        [Nullable[int]]$id,
+        [Parameter(ParameterSetName = 'get', Mandatory = $False)]
         [string]$Condition,
+        [Parameter(ParameterSetName = 'get', Mandatory = $False)]
         [string]$orderBy,
+        [Parameter(ParameterSetName = 'get', Mandatory = $False)]
         [string]$childconditions,
+        [Parameter(ParameterSetName = 'get', Mandatory = $False)]
         [string]$customfieldconditions,
+        [Parameter(ParameterSetName = 'get', Mandatory = $False)]
         [int]$page,
+        [Parameter(ParameterSetName = 'get', Mandatory = $False)]
         [int]$pageSize,
+        [Parameter(ParameterSetName = 'get', Mandatory = $False)]
         [switch]$all
     )
 
-    $URI = "https://$($global:CWMServerConnection.Server)/v4_6_release/apis/3.0/time/chargeCodes"
+    $URI = "https://$($global:CWMServerConnection.Server)/v4_6_release/apis/3.0/time/chargeCodes/$id"
 
     return Invoke-CWMGetMaster -Arguments $PsBoundParameters -URI $URI            
 }
